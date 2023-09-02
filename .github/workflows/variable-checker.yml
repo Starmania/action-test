@@ -3,13 +3,13 @@
 ########################################################################
 
 
-name: Variable/Secret checker
+name: "Variable/Secret checker"
 
 on:
   push:
 
 jobs:
-##############################################
+  ############################################
   init1:
     name: "Test if variable was found"
     runs-on: ubuntu-latest
@@ -27,9 +27,9 @@ jobs:
     steps:
       - id: step1
         run: exit 0
-##############################################
+  ############################################
 
-##############################################
+  ############################################
   init2:
     name: "Test if variable wasn't found"
     runs-on: ubuntu-latest
@@ -49,9 +49,9 @@ jobs:
     steps:
       - id: step1
         run: exit -1
-##############################################
+  ############################################
 
-##############################################
+  ############################################
   exist:
     name: "Secret should exist"
     runs-on: ubuntu-latest
@@ -61,9 +61,9 @@ jobs:
         shell: bash
         run: |
           if [ -z "$secr" ]; then echo "NULL"; else echo "Not NULL"; fi
-##############################################
+  ############################################
   
-##############################################
+  ############################################
   notExist:
     name: "Secret shouldn't exist"
     runs-on: ubuntu-latest
@@ -73,10 +73,10 @@ jobs:
         shell: bash
         run: |
           if [ -z "$secr" ]; then echo "NULL"; else echo "Not NULL"; fi
-##############################################
+  ############################################
 
 
-##############################################
+  ############################################
   exist-v2:
     name: "All secret should exist"
     runs-on: ubuntu-latest
@@ -92,9 +92,9 @@ jobs:
           }
           check "secr" "secr3" "secr2"
           echo "$result"
-##############################################
+  ############################################
 
-##############################################
+  ############################################
   notExist-v2:
     name: "At least one shouldn't exist"
     runs-on: ubuntu-latest
@@ -110,10 +110,10 @@ jobs:
           }
           check "secr" "secr3" "secr2"
           echo "$result"
-##############################################
+  ############################################
 
 
-##############################################
+  ############################################
   check-multiple-secrets:
     name: Checking available secrets
     runs-on: ubuntu-latest
@@ -147,17 +147,26 @@ jobs:
 
   runOK1:
     name: "run #1 OK!"
-    if: ${{needs.check-secrets.outputs.runOK1 == 1}}
+    needs: check-multiple-secrets
+    if: needs.check-multiple-secrets.outputs.runOK1 == 1}}
     runs-on: ubuntu-latest
+    steps:
+      - name: OK!
+        run: exit 0
 
   runOK2:
     name: "run #2 OK!"
-    if: needs.check-secrets.outputs.runOK2 == 1
+    needs: check-multiple-secrets
+    if: needs.check-multiple-secrets.outputs.runOK2 == 1
     runs-on: ubuntu-latest
+    steps:
+      - name: OK!
+        run: exit 0
 
   runFail:
     name: "run should fail"
-    if: ${{needs.check-secrets.outputs.runFail == 1}}
+    needs: check-multiple-secrets
+    if: needs.check-multiple-secrets.outputs.runFail == 1}}
     runs-on: ubuntu-latest
     steps:
       - name: ";("
