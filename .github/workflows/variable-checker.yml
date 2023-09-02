@@ -1,23 +1,17 @@
-# This is a basic workflow to help you get started with Actions
+########################################################################
+#    Check that your secret is available before running a full job !   #
+########################################################################
 
-name: CI
 
-# Controls when the workflow will run
+name: Variable/Secret checker
+
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  ##############################################
+##############################################
   init1:
+    name: "Test if variable was found"
     runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs:
@@ -33,10 +27,11 @@ jobs:
     steps:
       - id: step1
         run: exit 0
-  ##############################################
+##############################################
 
-  ##############################################
+##############################################
   init2:
+    name: "Test if variable wasn't found"
     runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs:
@@ -54,9 +49,9 @@ jobs:
     steps:
       - id: step1
         run: exit -1
-  ##############################################
+##############################################
 
-  ##############################################
+##############################################
   exist:
     name: "Secret should exist"
     runs-on: ubuntu-latest
@@ -66,9 +61,9 @@ jobs:
         shell: bash
         run: |
           if [ -z "$secr" ]; then echo "NULL"; else echo "Not NULL"; fi
-  ##############################################
+##############################################
   
-  ##############################################
+##############################################
   notExist:
     name: "Secret shouldn't exist"
     runs-on: ubuntu-latest
@@ -81,7 +76,7 @@ jobs:
 ##############################################
 
 
-  ##############################################
+##############################################
   exist-v2:
     name: "All secret should exist"
     runs-on: ubuntu-latest
@@ -97,9 +92,9 @@ jobs:
           }
           check "secr" "secr3" "secr2"
           echo "$result"
-  ##############################################
+##############################################
 
-  ##############################################
+##############################################
   notExist-v2:
     name: "At least one shouldn't exist"
     runs-on: ubuntu-latest
@@ -115,4 +110,56 @@ jobs:
           }
           check "secr" "secr3" "secr2"
           echo "$result"
-  ##############################################
+##############################################
+
+
+##############################################
+  check-multiple-secrets:
+    name: Checking available secrets
+    runs-on: ubuntu-latest
+    outputs:
+      runOK1: ${{ steps.all.outputs.runOK1 }}
+      runFail: ${{ steps.all.outputs.runFail }}
+      runOK2: ${{ steps.all.outputs.runOK2 }}
+      
+    env:
+      secr: ${{secrets.DO_NOT_EXIST}}
+      secr2: ${{secrets.EXIST2}}
+      secr3: ${{secrets.EXIST3}}
+
+    steps:
+      - name: "Checking..."
+        id: all
+        shell: bash
+        run: |
+          check () {
+            result=1; for var in $*; do if [ -z "${!var}" ]; then result=0; fi; done;
+          }
+          
+          check "secr2"
+          echo "runOK1=$result" >> "$GITHUB_OUTPUT"
+          
+          check "secr3" "secr"
+          echo "runFail=$result" >> "$GITHUB_OUTPUT"
+          
+          check "secr2" "secr3"
+          echo "runOK2=$result" >> "$GITHUB_OUTPUT"
+
+  runOK1:
+    name: "run #1 OK!"
+    if: ${{needs.check-secrets.outputs.runOK1 == 1}}
+    runs-on: ubuntu-latest
+
+  runOK2:
+    name: "run #2 OK!"
+    if: needs.check-secrets.outputs.runOK2 == 1
+    runs-on: ubuntu-latest
+
+  runFail:
+    name: "run should fail"
+    if: ${{needs.check-secrets.outputs.runFail == 1}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: ";("
+        run: exit -1
+##############################################
