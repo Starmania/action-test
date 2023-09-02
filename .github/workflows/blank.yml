@@ -79,3 +79,24 @@ jobs:
         run: |
           if [ -z "$secr" ]; then echo "NULL"; else echo "Not NULL"; fi
 ##############################################
+
+
+  ##############################################
+  exist-v2:
+    name: "All secret should exist"
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          secr: ${{secrets.EXIST}}
+        shell: bash
+        run: |
+          check () {
+            for var in $*;
+            do
+              if [ -z "${!var}" ]; then return 0; fi
+            done
+            return 1
+          }
+          check "secr"
+          echo "$?"
+  ##############################################
