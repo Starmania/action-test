@@ -38,7 +38,8 @@ jobs:
           api: ""
         shell: bash
         run: |
-          if [$api != ""] then 
+          if [$api != ""] 
+          then 
             echo "PRESENT"
           else
             echo "SAD" 
