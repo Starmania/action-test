@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs:
-      result: ${{ steps.step1.outputs.result  == 1 }}
+      result: ${{ steps.step1.outputs.result }}
     steps:
       - id: step1
         run: echo "result=0" >> "$GITHUB_OUTPUT"
