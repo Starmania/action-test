@@ -91,9 +91,8 @@ jobs:
         shell: bash
         run: |
           check () {
-            for var in $*;
-            do
-              if [ -z "${!var}" ]; then return 0; fi
+            for var in $* do;
+              [ -z "${!var}" ] && return 0
             done
             return 1
           }
