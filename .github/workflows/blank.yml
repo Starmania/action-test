@@ -39,7 +39,7 @@ jobs:
           notFound: ${{secrets.DO_NOT_USE}}
         shell: bash
         run: |
-          if [$api != $null] 
+          if [$api != $notFound] 
           then 
             echo "PRESENT"
           else
