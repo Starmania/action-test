@@ -91,14 +91,15 @@ jobs:
         shell: bash
         run: |
           check () {
+            result=1
             for var in $*;
               do 
                 if [ -z "${!var}" ];
                 then
-                  echo "${var} is NULL";
+                  result=0;
                 fi;
               done;
-            echo "Everything is defined";
+            echo "$result";
           }
           check "secr"
           echo "checked"
