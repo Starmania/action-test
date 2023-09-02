@@ -13,16 +13,15 @@ jobs:
   init1:
     name: "Test if variable was found"
     runs-on: ubuntu-latest
-    # Map a step output to a job output
     outputs:
       result: ${{ steps.step1.outputs.result }}
     steps:
       - id: step1
         run: echo "result=1" >> "$GITHUB_OUTPUT"
+
   result1:
     name: "Should run #1"
     runs-on: ubuntu-latest
-    # Map a step output to a job output
     needs: init1
     steps:
       - id: step1
@@ -33,17 +32,15 @@ jobs:
   init2:
     name: "Test if variable wasn't found"
     runs-on: ubuntu-latest
-    # Map a step output to a job output
     outputs:
       result: ${{ steps.step1.outputs.result }}
     steps:
       - id: step1
         run: echo "result=0" >> "$GITHUB_OUTPUT"
-        
+
   result2:
     name: "Shouln't run #1"
     runs-on: ubuntu-latest
-    # Map a step output to a job output
     needs: init2
     if: ${{needs.init2.outputs.output1 == 1}}
     steps:
@@ -148,7 +145,7 @@ jobs:
   runOK1:
     name: "run #1 OK!"
     needs: check-multiple-secrets
-    if: needs.check-multiple-secrets.outputs.runOK1 == 1}}
+    if: ${{needs.check-multiple-secrets.outputs.runOK1 == 1}}
     runs-on: ubuntu-latest
     steps:
       - name: OK!
@@ -166,7 +163,7 @@ jobs:
   runFail:
     name: "run should fail"
     needs: check-multiple-secrets
-    if: needs.check-multiple-secrets.outputs.runFail == 1}}
+    if: ${{needs.check-multiple-secrets.outputs.runFail == 1}}
     runs-on: ubuntu-latest
     steps:
       - name: ";("
