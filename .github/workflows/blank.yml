@@ -92,9 +92,9 @@ jobs:
         run: |
           check () {
             for var in $*;
-             do if [ -z "${!var}" ]; then return 0; fi
+             do (if [ -z "${!var}" ]; then return 0; fi);
             done
-            return 1
+            return 1;
           }
           check "secr"
           echo "$?"
