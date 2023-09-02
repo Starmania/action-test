@@ -92,7 +92,7 @@ jobs:
         run: |
           check () {
             for var in $*;
-             do echo "$var ${var} ${!var}"; [ -z "${!var}" ] && return 0;
+             do if [ -z "${!var}" ]; then return 0; fi
             done
             return 1
           }
