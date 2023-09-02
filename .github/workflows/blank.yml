@@ -36,9 +36,10 @@ jobs:
           OUTPUT1: ${{needs.job1.outputs.output1}}
           OUTPUT2: ${{needs.job1.outputs.output2}}
           api: ${{secrets.NOP}}
+          null: ${{null}}
         shell: bash
         run: |
-          if [$api != ""] 
+          if [$api != $null] 
           then 
             echo "PRESENT"
           else
