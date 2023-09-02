@@ -99,7 +99,7 @@ jobs:
                   result=0;
                 fi;
               done;
-            echo "$result";
+            return $result;
           }
           check "secr"
           echo "checked"
