@@ -88,11 +88,31 @@ jobs:
     steps:
       - env:
           secr: ${{secrets.EXIST}}
+          secr2: ${{secrets.EXIST2}}
+          secr3: ${{secrets.EXIST3}}
         shell: bash
         run: |
           check () {
             result=1; for var in $*; do if [ -z "${!var}" ]; then result=0; fi; done;
           }
-          check "secr"
+          check "secr" "secr3" "secr2"
+          echo "$result"
+  ##############################################
+
+  ##############################################
+  notExist-v2:
+    name: "At least one shouldn't exist"
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          secr: ${{secrets.DO_NOT_EXIST}}
+          secr2: ${{secrets.EXIST2}}
+          secr3: ${{secrets.EXIST3}}
+        shell: bash
+        run: |
+          check () {
+            result=1; for var in $*; do if [ -z "${!var}" ]; then result=0; fi; done;
+          }
+          check "secr" "secr3" "secr2"
           echo "$result"
   ##############################################
